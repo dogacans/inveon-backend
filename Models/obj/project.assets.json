@@ -1,0 +1,91 @@
+{
+  "version": 3,
+  "targets": {
+    "net7.0": {
+      "Inveon.MessageBus/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v7.0",
+        "compile": {
+          "bin/placeholder/Inveon.MessageBus.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Inveon.MessageBus.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Inveon.MessageBus/1.0.0": {
+      "type": "project",
+      "path": "../Inveon.MessageBus/Inveon.MessageBus.csproj",
+      "msbuildProject": "../Inveon.MessageBus/Inveon.MessageBus.csproj"
+    }
+  },
+  "projectFileDependencyGroups": {
+    "net7.0": [
+      "Inveon.MessageBus >= 1.0.0"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\Dogacan\\.nuget\\packages\\": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "C:\\Users\\Dogacan\\Desktop\\inveon-bootcamp\\ödev\\readyForGit\\proje\\final\\Models\\Inveon.Models.csproj",
+      "projectName": "Inveon.Models",
+      "projectPath": "C:\\Users\\Dogacan\\Desktop\\inveon-bootcamp\\ödev\\readyForGit\\proje\\final\\Models\\Inveon.Models.csproj",
+      "packagesPath": "C:\\Users\\Dogacan\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Dogacan\\Desktop\\inveon-bootcamp\\ödev\\readyForGit\\proje\\final\\Models\\obj\\",
+      "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "C:\\Users\\Dogacan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
+      "originalTargetFrameworks": [
+        "net7.0"
+      ],
+      "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net7.0": {
+          "targetAlias": "net7.0",
+          "projectReferences": {
+            "C:\\Users\\Dogacan\\Desktop\\inveon-bootcamp\\ödev\\readyForGit\\proje\\final\\Inveon.MessageBus\\Inveon.MessageBus.csproj": {
+              "projectPath": "C:\\Users\\Dogacan\\Desktop\\inveon-bootcamp\\ödev\\readyForGit\\proje\\final\\Inveon.MessageBus\\Inveon.MessageBus.csproj"
+            }
+          }
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      }
+    },
+    "frameworks": {
+      "net7.0": {
+        "targetAlias": "net7.0",
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48",
+          "net481"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.403\\RuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+C:\Users\Dogacan\Desktop\inveon-bootcamp\ödev\readyForGit\proje\final\Models\bin\Debug\net7.0\Inveon.Models.deps.json
+C:\Users\Dogacan\Desktop\inveon-bootcamp\ödev\readyForGit\proje\final\Models\bin\Debug\net7.0\Inveon.Models.dll
+C:\Users\Dogacan\Desktop\inveon-bootcamp\ödev\readyForGit\proje\final\Models\bin\Debug\net7.0\Inveon.Models.pdb
+C:\Users\Dogacan\Desktop\inveon-bootcamp\ödev\readyForGit\proje\final\Models\obj\Debug\net7.0\Inveon.Models.csproj.AssemblyReference.cache
+C:\Users\Dogacan\Desktop\inveon-bootcamp\ödev\readyForGit\proje\final\Models\obj\Debug\net7.0\Inveon.Models.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Dogacan\Desktop\inveon-bootcamp\ödev\readyForGit\proje\final\Models\obj\Debug\net7.0\Inveon.Models.AssemblyInfoInputs.cache
+C:\Users\Dogacan\Desktop\inveon-bootcamp\ödev\readyForGit\proje\final\Models\obj\Debug\net7.0\Inveon.Models.AssemblyInfo.cs
+C:\Users\Dogacan\Desktop\inveon-bootcamp\ödev\readyForGit\proje\final\Models\obj\Debug\net7.0\Inveon.Models.csproj.CoreCompileInputs.cache
+C:\Users\Dogacan\Desktop\inveon-bootcamp\ödev\readyForGit\proje\final\Models\obj\Debug\net7.0\Inveon.Models.dll
+C:\Users\Dogacan\Desktop\inveon-bootcamp\ödev\readyForGit\proje\final\Models\obj\Debug\net7.0\refint\Inveon.Models.dll
+C:\Users\Dogacan\Desktop\inveon-bootcamp\ödev\readyForGit\proje\final\Models\obj\Debug\net7.0\Inveon.Models.pdb
+C:\Users\Dogacan\Desktop\inveon-bootcamp\ödev\readyForGit\proje\final\Models\obj\Debug\net7.0\ref\Inveon.Models.dll
+C:\Users\Dogacan\Desktop\inveon-bootcamp\ödev\readyForGit\proje\final\Models\bin\Debug\net7.0\Inveon.MessageBus.dll
+C:\Users\Dogacan\Desktop\inveon-bootcamp\ödev\readyForGit\proje\final\Models\bin\Debug\net7.0\Inveon.MessageBus.pdb
+C:\Users\Dogacan\Desktop\inveon-bootcamp\ödev\readyForGit\proje\final\Models\obj\Debug\net7.0\Inveon.Models.csproj.CopyComplete
