@@ -9,10 +9,22 @@ namespace Inveon.Models
         public int ProductId { get; set; }
         [Required]
         public string Name { get; set; }
-        [Range(1, 1000)]
         public double Price { get; set; }
+        public string CurrencyType { get; set; }
         public string Description { get; set; }
-        public string CategoryName { get; set; }
-        public string ImageUrl { get; set; }
+        public int CategoryID { get; set; }
+        [ForeignKey("CategoryID")]
+        public virtual Category Category { get; set; }
+        public int BrandID { get; set; }
+        [ForeignKey("BrandID")]
+        public virtual Brand Brand { get; set; }
+        public string Gender { get; set; }
+        public string Material { get; set; }
+        public string Style { get; set; }
+        public string Color { get; set; }
+        public string Cut { get; set; }
+        public string Season { get; set; }
+        public string ImageUrls { get; set; }
+        public string DateAdded { get; set; }
     }
 }

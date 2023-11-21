@@ -14,7 +14,7 @@ namespace Inveon.Web.ViewModels
         public string Description { get; set; }
         public string ImageUrl { get; set; }
         public string CategoryName { get; set; }
-        [Range(1, 100)]
+        [Range(1, 1000)]
         public int Count { get; set; }
     }
 }
