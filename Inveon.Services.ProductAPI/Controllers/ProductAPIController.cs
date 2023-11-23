@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text.Json;
 
 namespace Inveon.Services.ProductAPI.Controllers
 {
@@ -41,7 +43,7 @@ namespace Inveon.Services.ProductAPI.Controllers
         {
             try
             {
-                ProductDto productDto = await _productRepository.GetProductById(id);
+                ProductWithStockData productDto = await _productRepository.GetProductById(id);
                 _response.Result = productDto;
             }
             catch (Exception ex)

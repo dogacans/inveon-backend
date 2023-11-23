@@ -16,8 +16,5 @@ public class ProductStock
 
     [Range(0, int.MaxValue)]
     public int StockQuantity { get; set; }
-
-    // Navigation property to represent the relationship with Product
-    [ForeignKey("ProductId")]
-    public virtual Product Product { get; set; }
+    
 }

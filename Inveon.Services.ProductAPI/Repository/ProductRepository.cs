@@ -56,12 +56,17 @@ namespace Inveon.Services.ProductAPI.Repository
             }
         }
 
-        public async Task<ProductDto> GetProductById(int productId)
+        public async Task<ProductWithStockData> GetProductById(int productId)
         {
-            //linq select * from Product where Id=productId
-            //{Id:1,Name : Product1}
-            Product product = await _db.Products.Where(x => x.ProductId == productId).FirstOrDefaultAsync();
-            return _mapper.Map<ProductDto>(product);
+            Product product = await _db.Products.Where(p => p.ProductId == productId).FirstOrDefaultAsync();
+            IEnumerable<ProductStock> stocks = await _db.ProductStocks.Where(s => s.ProductId == productId).ToListAsync();
+            
+            ProductWithStockData productWithStockData = new ProductWithStockData
+            {
+                productData = product,
+                stockData = stocks
+            };
+            return productWithStockData;
         }
 
         public async Task<IEnumerable<ProductDto>> GetProducts()

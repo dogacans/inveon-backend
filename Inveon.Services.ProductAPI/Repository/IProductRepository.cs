@@ -8,7 +8,7 @@ namespace Inveon.Services.ProductAPI.Repository
 
         //crud  create read update delete  
         Task<IEnumerable<ProductDto>> GetProducts();
-        Task<ProductDto> GetProductById(int productId);
+        Task<ProductWithStockData> GetProductById(int productId);
         Task<ProductDto> CreateUpdateProduct(ProductDto productDto);
         Task<bool> DeleteProduct(int productId);
     }
