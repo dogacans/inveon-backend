@@ -36,11 +36,14 @@ namespace Inveon.Services.Identity
                 },
                 new Client
                 {
-                    ClientId="inveon",
+                    ClientId = "inveon",
                     ClientSecrets= { new Secret("secret".Sha256())},
                     AllowedGrantTypes = GrantTypes.Code,
-                    RedirectUris={ "http://localhost:5000/signin-oidc" },
-                    PostLogoutRedirectUris={"http://localhost:5000/signout-callback-oidc" },
+                    RedirectUris = { 
+                        "http://localhost:3000/callback"
+                    },
+                    PostLogoutRedirectUris = { "http://localhost:3000/" },
+                    AllowedCorsOrigins = {"http://localhost:3000"},
                     AllowedScopes=new List<string>
                     {
                         IdentityServerConstants.StandardScopes.OpenId,

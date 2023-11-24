@@ -4220,35 +4220,37 @@
     ]
   },
   "packageFolders": {
-    "/home/doga/.nuget/packages/": {}
+    "C:\\Users\\Dogacan\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/doga/Desktop/inveon/inveon-backend/Inveon.Services.OrderAPI/Inveon.Services.OrderAPI.csproj",
+      "projectUniqueName": "C:\\Users\\Dogacan\\Desktop\\inveon-bootcamp\\ödev\\readyForGit\\proje\\final\\Inveon.Services.OrderAPI\\Inveon.Services.OrderAPI.csproj",
       "projectName": "Inveon.Services.OrderAPI",
-      "projectPath": "/home/doga/Desktop/inveon/inveon-backend/Inveon.Services.OrderAPI/Inveon.Services.OrderAPI.csproj",
-      "packagesPath": "/home/doga/.nuget/packages/",
-      "outputPath": "/home/doga/Desktop/inveon/inveon-backend/Inveon.Services.OrderAPI/obj/",
+      "projectPath": "C:\\Users\\Dogacan\\Desktop\\inveon-bootcamp\\ödev\\readyForGit\\proje\\final\\Inveon.Services.OrderAPI\\Inveon.Services.OrderAPI.csproj",
+      "packagesPath": "C:\\Users\\Dogacan\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Dogacan\\Desktop\\inveon-bootcamp\\ödev\\readyForGit\\proje\\final\\Inveon.Services.OrderAPI\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/doga/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\Dogacan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net7.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net7.0": {
           "targetAlias": "net7.0",
           "projectReferences": {
-            "/home/doga/Desktop/inveon/inveon-backend/Inveon.MessageBus/Inveon.MessageBus.csproj": {
-              "projectPath": "/home/doga/Desktop/inveon/inveon-backend/Inveon.MessageBus/Inveon.MessageBus.csproj"
+            "C:\\Users\\Dogacan\\Desktop\\inveon-bootcamp\\ödev\\readyForGit\\proje\\final\\Inveon.MessageBus\\Inveon.MessageBus.csproj": {
+              "projectPath": "C:\\Users\\Dogacan\\Desktop\\inveon-bootcamp\\ödev\\readyForGit\\proje\\final\\Inveon.MessageBus\\Inveon.MessageBus.csproj"
             },
-            "/home/doga/Desktop/inveon/inveon-backend/Models/Inveon.Models.csproj": {
-              "projectPath": "/home/doga/Desktop/inveon/inveon-backend/Models/Inveon.Models.csproj"
+            "C:\\Users\\Dogacan\\Desktop\\inveon-bootcamp\\ödev\\readyForGit\\proje\\final\\Models\\Inveon.Models.csproj": {
+              "projectPath": "C:\\Users\\Dogacan\\Desktop\\inveon-bootcamp\\ödev\\readyForGit\\proje\\final\\Models\\Inveon.Models.csproj"
             }
           }
         }
@@ -4317,7 +4319,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/7.0.114/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.403\\RuntimeIdentifierGraph.json"
       }
     }
   }

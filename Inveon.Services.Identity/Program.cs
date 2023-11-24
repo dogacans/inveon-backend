@@ -27,6 +27,9 @@ var builderProvider = builder.Services.AddIdentityServer(options =>
     options.Events.RaiseFailureEvents = true;
     options.Events.RaiseSuccessEvents = true;
     options.EmitStaticAudienceClaim = true;
+    // options.UserInteraction.LoginUrl = "http://localhost:3000/login";
+    // options.UserInteraction.ErrorUrl = "http://localhost:3000/loginError";
+    // options.UserInteraction.LogoutUrl = "http://localhost:3000/logout";
 }).AddInMemoryIdentityResources(SD.IdentityResources)
 .AddInMemoryApiScopes(SD.ApiScopes)
 .AddInMemoryClients(SD.Clients)
@@ -57,11 +60,16 @@ using (var serviceScope = app.Services.CreateScope())
     var service = serviceScope.ServiceProvider.GetService<IDbInitializer>();
     service.Initialize();
 }
+
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllerRoute(
         name: "default",
         pattern: "{controller=Home}/{action=Index}/{id?}");
 });
+
+app.UseCors(
+    options => options.WithOrigins("http://localhost:3000").AllowAnyMethod()
+);
 
 app.Run();
