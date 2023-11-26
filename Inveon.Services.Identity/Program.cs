@@ -47,6 +47,11 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+// This policy is required to make cookies work on Chrome in HTTP.
+// Apparently, Chrome won't accept Samesite: none cookies without Secure tag
+// and thats not allowed?
+app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = SameSiteMode.Lax });
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
