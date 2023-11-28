@@ -3,6 +3,7 @@ using Inveon.Services.ShoppingCartAPI.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Inveon.Services.ShoppingCartAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231128183618_SizeCol")]
+    partial class SizeCol
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,6 +62,8 @@ namespace Inveon.Services.ShoppingCartAPI.Migrations
                     b.HasKey("CartDetailsId");
 
                     b.HasIndex("CartHeaderId");
+
+                    b.HasIndex("ProductId");
 
                     b.ToTable("CartDetails");
                 });
@@ -177,7 +182,15 @@ namespace Inveon.Services.ShoppingCartAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Inveon.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("CartHeader");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("Inveon.Models.Product", b =>

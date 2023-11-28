@@ -1,9 +1,10 @@
-﻿using Inveon.Models;
+﻿using System.Security.Claims;
+using Inveon.Models;
 using Inveon.Models.DTOs;
 using Inveon.Services.ShoppingCartAPI.RabbitMQSender;
 using Inveon.Services.ShoppingCartAPI.Repository;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Inveon.Services.ShoppingCartAPI.Controllers
@@ -14,10 +15,8 @@ namespace Inveon.Services.ShoppingCartAPI.Controllers
     {
         private readonly ICartRepository _cartRepository;
         private readonly ICouponRepository _couponRepository;
-        // private readonly IMessageBus _messageBus;
         protected ResponseDto _response;
         private readonly IRabbitMQCartMessageSender _rabbitMQCartMessageSender;
-        // IMessageBus messageBus,
         public CartAPIController(ICartRepository cartRepository,
             ICouponRepository couponRepository, IRabbitMQCartMessageSender rabbitMQCartMessageSender)
         {
@@ -27,14 +26,18 @@ namespace Inveon.Services.ShoppingCartAPI.Controllers
             //_messageBus = messageBus;
             this._response = new ResponseDto();
         }
-
-        [HttpGet("GetCart/{userId}")]
-        public async Task<object> GetCart(string userId)
+        
+        [Authorize]
+        [HttpGet("GetCart/")]
+        public async Task<object> GetCart()
         {
+            ClaimsPrincipal currentUser = this.User;
+            string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+            
             try
             {
-                CartDto cartDto = await _cartRepository.GetCartByUserId(userId);
-                _response.Result = cartDto;
+                List <CartDetails> cartDetails = await _cartRepository.GetCartByUserId(userId);
+                _response.Result = cartDetails;
             }
             catch (Exception ex)
             {
@@ -56,8 +59,28 @@ namespace Inveon.Services.ShoppingCartAPI.Controllers
                 {
                     cartDto.CartHeader.CouponCode = ""; //
                 }
-                CartDto model = await _cartRepository.CreateUpdateCart(cartDto);
-                _response.Result = model;
+                // CartDto model = await _cartRepository.CreateUpdateCart(cartDto);
+                // _response.Result = model;
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages
+                     = new List<string>() { ex.ToString() };
+            }
+            return _response;
+        }
+        
+        [Authorize]
+        [HttpPost("AddProductToCart")]
+        public async Task<object> AddProductToCart([FromBody] AddItemToCartInfo info)
+        {
+            ClaimsPrincipal currentUser = this.User;
+            string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+            
+            try
+            { 
+                await _cartRepository.AddProductToCart(userId, info.productId, info.size, info.count);
             }
             catch (Exception ex)
             {
@@ -73,8 +96,8 @@ namespace Inveon.Services.ShoppingCartAPI.Controllers
         {
             try
             {
-                CartDto cartDt = await _cartRepository.CreateUpdateCart(cartDto);
-                _response.Result = cartDt;
+                // CartDto cartDt = await _cartRepository.CreateUpdateCart(cartDto);
+                // _response.Result = cartDt;
             }
             catch (Exception ex)
             {
@@ -141,8 +164,6 @@ namespace Inveon.Services.ShoppingCartAPI.Controllers
         {
             try
             {
-
-
                 if (!string.IsNullOrEmpty(cartDto.CartHeader.CouponCode))
                 {
                     CouponDto coupon = await _couponRepository.GetCoupon(cartDto.CartHeader.CouponCode);

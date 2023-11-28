@@ -97,6 +97,14 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseCors(
+    options => options.WithOrigins("http://localhost:3000")
+        .AllowCredentials()
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+);
+
 app.MapControllers();
+
 
 app.Run();

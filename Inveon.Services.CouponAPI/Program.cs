@@ -26,6 +26,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<ICouponRepository, CouponRepository>();
 builder.Services.AddControllers();
 
+
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
     {
@@ -81,7 +82,6 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var app = builder.Build();
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

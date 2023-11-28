@@ -32,13 +32,14 @@ namespace Inveon.Service.ShoppingCartAPI.Controllers
             this._response = new ResponseDto();
         }
 
+        // Payment method
         [HttpPost]
         [Authorize]
         public async Task<object> Checkout([FromBody] CheckoutHeaderDto checkoutHeader)
         {
             try
             {
-                CartDto cartDto = await _cartRepository.GetCartByUserId(checkoutHeader.UserId);
+                CartDto cartDto = _cartRepository.GetCartByUserIdNonAsync(checkoutHeader.UserId);
                 if (cartDto == null)
                 {
                     return BadRequest();
@@ -176,7 +177,8 @@ namespace Inveon.Service.ShoppingCartAPI.Controllers
                 BasketItem basketItem = new BasketItem();
                 basketItem.Id = productInfo.ProductId.ToString();
                 basketItem.Name = productInfo.Name;
-                basketItem.Category1 = productInfo.CategoryName;
+                // basketItem.Category1 = productInfo.CategoryName;
+                basketItem.Category1 = "TODO CHANGE CATEGORY";
                 basketItem.ItemType = BasketItemType.PHYSICAL.ToString();
                 basketItem.Price = (productInfo.Price * productDetails.Count).ToString(System.Globalization.CultureInfo.InvariantCulture);
                 basketItems.Add(basketItem);
