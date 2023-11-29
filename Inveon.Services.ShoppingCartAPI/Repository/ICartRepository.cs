@@ -14,5 +14,6 @@ namespace Inveon.Services.ShoppingCartAPI.Repository
         Task<bool> ApplyCoupon(string userId, string couponCode);
         Task<bool> RemoveCoupon(string userId);
         Task<bool> ClearCart(string userId);
+        Task<bool> DeleteProductFromCart(string userId, int productId, string size);
     }
 }

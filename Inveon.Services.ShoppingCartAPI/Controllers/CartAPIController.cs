@@ -90,6 +90,25 @@ namespace Inveon.Services.ShoppingCartAPI.Controllers
             }
             return _response;
         }
+        [Authorize]
+        [HttpDelete("DeleteProductFromCart")]
+        public async Task<object> DeleteProductFromCart([FromBody] AddItemToCartInfo info)
+        {
+            ClaimsPrincipal currentUser = this.User;
+            string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+            
+            try
+            { 
+                await _cartRepository.DeleteProductFromCart(userId, info.productId, info.size);
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMessages
+                     = new List<string>() { ex.ToString() };
+            }
+            return _response;
+        }
 
         [HttpPost("UpdateCart")]
         public async Task<object> UpdateCart(CartDto cartDto)

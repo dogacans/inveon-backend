@@ -42,6 +42,29 @@ namespace Inveon.Services.ShoppingCartAPI.Repository
             }
             return false;
         }
+        public async Task<bool> DeleteProductFromCart(string userId, int productId, string size)
+        {
+            var cartHeaderFromDb = await _db
+                .CartHeaders
+                .FirstOrDefaultAsync(ch => 
+                    ch.UserId == userId
+                    );
+            if (cartHeaderFromDb != null)
+            {
+                CartDetails detailsToDelete = await _db.CartDetails
+                    .FirstOrDefaultAsync(
+                        cd =>
+                            cd.ProductId == productId
+                            && cd.Size == size
+                        );
+                if (detailsToDelete != null)
+                {
+                    _db.CartDetails.Remove(detailsToDelete);
+                }
+                await _db.SaveChangesAsync();
+            }
+            return true;
+        }
 
         
         public async Task<bool> AddProductToCart(string userId, int productId, string size, int count)

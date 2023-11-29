@@ -1,8 +1,6 @@
 ﻿namespace Inveon.Models;
 
-public class AddItemToCartInfo
+public class CartDetailsIdObj
 {
-        public int productId {get; set;}
-        public string size {get; set;}
-        public int count {get; set;}
+        public int cartDetailsId {get; set;}
 }
