@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Iyzipay.Request;
 using Iyzipay.Model;
@@ -8,6 +9,8 @@ using Inveon.Services.ShoppingCartAPI.Repository;
 using Inveon.Models;
 using Inveon.Models.DTOs;
 using System.Text.Json;
+using Newtonsoft.Json;
+using HttpClient = System.Net.Http.HttpClient;
 
 namespace Inveon.Service.ShoppingCartAPI.Controllers
 {
@@ -21,49 +24,51 @@ namespace Inveon.Service.ShoppingCartAPI.Controllers
         // private readonly IMessageBus _messageBus;
         protected ResponseDto _response;
         private readonly IRabbitMQCartMessageSender _rabbitMQCartMessageSender;
+
+        private HttpClient _httpClient;
         // IMessageBus messageBus,
         public CartAPICheckOutController(ICartRepository cartRepository,
-            ICouponRepository couponRepository, IRabbitMQCartMessageSender rabbitMQCartMessageSender)
+            ICouponRepository couponRepository, IRabbitMQCartMessageSender rabbitMQCartMessageSender,
+            HttpClient httpClient)
         {
             _cartRepository = cartRepository;
             _couponRepository = couponRepository;
             _rabbitMQCartMessageSender = rabbitMQCartMessageSender;
             //_messageBus = messageBus;
             this._response = new ResponseDto();
+            _httpClient = httpClient;
         }
 
         // Payment method
-        [HttpPost]
         [Authorize]
-        public async Task<object> Checkout([FromBody] CheckoutHeaderDto checkoutHeader)
+        [HttpPost("checkout")]
+        public async Task<object> Checkout([FromBody] CheckoutHeaderDto checkoutHeaderDto)
         {
+            ClaimsPrincipal currentUser = this.User;
+            string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
             try
             {
-                CartDto cartDto = _cartRepository.GetCartByUserIdNonAsync(checkoutHeader.UserId);
-                if (cartDto == null)
+                Cart cart = _cartRepository.GetCartByUserIdNonAsync(userId);
+                if (cart == null)
                 {
                     return BadRequest();
                 }
 
-                if (!string.IsNullOrEmpty(checkoutHeader.CouponCode))
-                {
-                    CouponDto coupon = await _couponRepository.GetCoupon(checkoutHeader.CouponCode);
-                    if (checkoutHeader.DiscountTotal != coupon.DiscountAmount)
-                    {
-                        _response.IsSuccess = false;
-                        _response.ErrorMessages = new List<string>() { "Coupon Price has changed, please confirm" };
-                        _response.DisplayMessage = "Coupon Price has changed, please confirm";
-                        return _response;
-                    }
-                }
-
-                checkoutHeader.CartDetails = cartDto.CartDetails;
-                //logic to add message to process order.
-                // await _messageBus.PublishMessage(checkoutHeader, "checkoutqueue");
-
-                ////rabbitMQ
-
-                Payment payment = OdemeIslemi(checkoutHeader);
+                CheckoutHeader checkoutHeader = new CheckoutHeader();
+                checkoutHeader.UserId = userId;
+                checkoutHeader.OrderTotal = checkoutHeaderDto.OrderTotal;
+                checkoutHeader.FirstName = checkoutHeaderDto.FirstName;
+                checkoutHeader.LastName = checkoutHeaderDto.LastName;
+                checkoutHeader.Phone = checkoutHeaderDto.Phone;
+                checkoutHeader.Email = checkoutHeaderDto.Email;
+                checkoutHeader.CardNumber = checkoutHeaderDto.CardNumber;
+                checkoutHeader.CVV = checkoutHeaderDto.CVV;
+                checkoutHeader.ExpiryMonth = checkoutHeaderDto.ExpiryMonth;
+                checkoutHeader.ExpiryYear = checkoutHeaderDto.ExpiryYear;
+                checkoutHeader.CartDetailsList = cart.CartDetails;
+                checkoutHeader.cartHeader = cart.CartHeader;
+                
+                Payment payment = await OdemeIslemi(checkoutHeader);
                 if (payment.Status != "success")
                 {
                     _response.IsSuccess = false;
@@ -71,8 +76,8 @@ namespace Inveon.Service.ShoppingCartAPI.Controllers
                     return _response;
                 }
 
-                _rabbitMQCartMessageSender.SendMessage(checkoutHeader, "checkoutqueue");
-                _rabbitMQCartMessageSender.SendMessage(checkoutHeader, "informQueue");
+                _rabbitMQCartMessageSender.SendMessage(checkoutHeaderDto, "checkoutqueue");
+                _rabbitMQCartMessageSender.SendMessage(checkoutHeaderDto, "informQueue");
                 await _cartRepository.ClearCart(checkoutHeader.UserId);
             }
             catch (Exception ex)
@@ -82,11 +87,20 @@ namespace Inveon.Service.ShoppingCartAPI.Controllers
             }
             return _response;
         }
-
-        public Payment OdemeIslemi(CheckoutHeaderDto checkoutHeaderDto)
+        
+        public class RootObject
+        {
+            public bool IsSuccess { get; set; }
+            public ProductWithStockData Result { get; set; }
+            public string DisplayMessage { get; set; }
+            public object ErrorMessages { get; set; } // You might want to replace 'object' with the actual type
+        }
+        public async Task<Payment> OdemeIslemi(CheckoutHeader checkoutHeader)
         {
 
-            CartDto cartDto = _cartRepository.GetCartByUserIdNonAsync(checkoutHeaderDto.UserId);
+            Cart cart = new Cart();
+            cart.CartHeader = checkoutHeader.cartHeader;
+            cart.CartDetails = checkoutHeader.CartDetailsList;
 
             //CartDto cartDto = checkoutHeaderDto.CartDetails;
             Options options = new Options();
@@ -95,12 +109,24 @@ namespace Inveon.Service.ShoppingCartAPI.Controllers
             options.SecretKey = "sandbox-r8qKpYEbYpkRnqQ0I49dxXQxJye4scvK";
             options.BaseUrl = "https://sandbox-api.iyzipay.com";
 
+            List<Product> productsFromDb = new List<Product>();
+            foreach (CartDetails cartDetails in checkoutHeader.CartDetailsList)
+            {
+            var hrm = await 
+                _httpClient.GetAsync($"http://localhost:5003/api/products/{cartDetails.ProductId.ToString()}");
+                string jsonContent = await hrm.Content.ReadAsStringAsync();
+                RootObject response = JsonConvert.DeserializeObject<RootObject>(jsonContent);
+                Product product = response.Result.productData;
+                productsFromDb.Add(product);
+            }
+            
+            
             // Sepet tutarını kendi databaseimizden gelen bilgiden hesaplıyoruz.
             double totalPrice = 0.0;
             
-            foreach (CartDetailsDto productDetails in cartDto.CartDetails)
+            foreach (CartDetails productDetails in checkoutHeader.CartDetailsList)
             {
-                var priceEach = productDetails.Product.Price;
+                var priceEach = productsFromDb.Find(p => p.ProductId == productDetails.ProductId).Price;
                 var count = productDetails.Count;
                 totalPrice += priceEach * count;
             }
@@ -121,16 +147,16 @@ namespace Inveon.Service.ShoppingCartAPI.Controllers
             request.Currency = Currency.TRY.ToString();
             request.Installment = 1;
             request.BasketId = "B67832";
-            request.BasketId = checkoutHeaderDto.CartHeaderId.ToString();
+            request.BasketId = checkoutHeader.cartHeader.CartHeaderId.ToString();
             request.PaymentChannel = PaymentChannel.WEB.ToString();
             request.PaymentGroup = PaymentGroup.PRODUCT.ToString();
 
             PaymentCard paymentCard = new PaymentCard();
-            paymentCard.CardHolderName = $"{checkoutHeaderDto.FirstName} {checkoutHeaderDto.LastName}";
-            paymentCard.CardNumber = checkoutHeaderDto.CardNumber;
-            paymentCard.ExpireMonth = checkoutHeaderDto.ExpiryMonth;
-            paymentCard.ExpireYear = checkoutHeaderDto.ExpiryYear;
-            paymentCard.Cvc = checkoutHeaderDto.CVV;
+            paymentCard.CardHolderName = $"{checkoutHeader.FirstName} {checkoutHeader.LastName}";
+            paymentCard.CardNumber = checkoutHeader.CardNumber;
+            paymentCard.ExpireMonth = checkoutHeader.ExpiryMonth;
+            paymentCard.ExpireYear = checkoutHeader.ExpiryYear;
+            paymentCard.Cvc = checkoutHeader.CVV;
             paymentCard.RegisterCard = 0;
             paymentCard.CardAlias = "Inveon";
             request.PaymentCard = paymentCard;
@@ -138,10 +164,10 @@ namespace Inveon.Service.ShoppingCartAPI.Controllers
             Buyer buyer = new Buyer();
             //buyer.Id = cartDto.CartHeader.UserId;
             buyer.Id = "BY789";
-            buyer.Name = checkoutHeaderDto.FirstName;
-            buyer.Surname = checkoutHeaderDto.LastName;
-            buyer.GsmNumber = checkoutHeaderDto.Phone;
-            buyer.Email = checkoutHeaderDto.Email;
+            buyer.Name = checkoutHeader.FirstName;
+            buyer.Surname = checkoutHeader.LastName;
+            buyer.GsmNumber = checkoutHeader.Phone;
+            buyer.Email = checkoutHeader.Email;
             buyer.IdentityNumber = "74300864791";
             buyer.LastLoginDate = "2015-10-05 12:43:35";
             buyer.RegistrationDate = "2013-04-21 15:12:09";
@@ -153,7 +179,7 @@ namespace Inveon.Service.ShoppingCartAPI.Controllers
             request.Buyer = buyer;
 
             Address shippingAddress = new Address();
-            shippingAddress.ContactName = $"{checkoutHeaderDto.FirstName} {checkoutHeaderDto.LastName}"; ;
+            shippingAddress.ContactName = $"{checkoutHeader.FirstName} {checkoutHeader.LastName}"; ;
             shippingAddress.City = "Istanbul";
             shippingAddress.Country = "Turkey";
             shippingAddress.Description = "Inveon Headquarters, Levent Istanbul";
@@ -161,7 +187,7 @@ namespace Inveon.Service.ShoppingCartAPI.Controllers
             request.ShippingAddress = shippingAddress;
 
             Address billingAddress = new Address();
-            billingAddress.ContactName = $"{checkoutHeaderDto.FirstName} {checkoutHeaderDto.LastName}"; ;
+            billingAddress.ContactName = $"{checkoutHeader.FirstName} {checkoutHeader.LastName}"; ;
             billingAddress.City = "Istanbul";
             billingAddress.Country = "Turkey";
             billingAddress.Description = "Inveon Headquarters, Levent Istanbul";
@@ -171,14 +197,14 @@ namespace Inveon.Service.ShoppingCartAPI.Controllers
             List<BasketItem> basketItems = new List<BasketItem>();
 
             // Sepetteki her ürünü teker teker iyzico'nun sipariş detayları kısmına yazdır.
-            foreach (CartDetailsDto productDetails in cartDto.CartDetails)
+            foreach (CartDetails productDetails in checkoutHeader.CartDetailsList)
             {
-                ProductDto productInfo = productDetails.Product;
+                Product productInfo = productsFromDb.Find(p => p.ProductId == productDetails.ProductId);
                 BasketItem basketItem = new BasketItem();
                 basketItem.Id = productInfo.ProductId.ToString();
                 basketItem.Name = productInfo.Name;
                 // basketItem.Category1 = productInfo.CategoryName;
-                basketItem.Category1 = "TODO CHANGE CATEGORY";
+                basketItem.Category1 = productInfo.CategoryID.ToString();
                 basketItem.ItemType = BasketItemType.PHYSICAL.ToString();
                 basketItem.Price = (productInfo.Price * productDetails.Count).ToString(System.Globalization.CultureInfo.InvariantCulture);
                 basketItems.Add(basketItem);

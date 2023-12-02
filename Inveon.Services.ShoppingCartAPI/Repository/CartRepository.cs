@@ -184,7 +184,7 @@ namespace Inveon.Services.ShoppingCartAPI.Repository
             return cartDetails;
         }
 
-        public CartDto GetCartByUserIdNonAsync(string userId)
+        public Cart GetCartByUserIdNonAsync(string userId)
         {
             Cart cart = new()
             {
@@ -194,7 +194,7 @@ namespace Inveon.Services.ShoppingCartAPI.Repository
             cart.CartDetails = _db.CartDetails
                 .Where(u => u.CartHeaderId == cart.CartHeader.CartHeaderId);
 
-            return _mapper.Map<CartDto>(cart);
+            return cart;
         }
 
 

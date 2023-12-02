@@ -1,9 +1,10 @@
 ﻿using Inveon.MessageBus;
 
-namespace Inveon.Models.DTOs
+namespace Inveon.Models
 {
-    public class CheckoutHeaderDto : BaseMessage
+    public class CheckoutHeader : BaseMessage
     {
+        public string UserId { get; set; }
         public double OrderTotal { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -13,5 +14,7 @@ namespace Inveon.Models.DTOs
         public string CVV { get; set; }
         public string ExpiryMonth { get; set; }
         public string ExpiryYear { get; set; }
+        public CartHeader cartHeader { get; set; }
+        public IEnumerable<CartDetails> CartDetailsList { get; set; }
     }
 }

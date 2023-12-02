@@ -26,11 +26,11 @@ namespace Inveon.Services.Inform.CommunicationMethods
             };
         }
 
-        public void SendMessage(CheckoutHeaderDto checkoutHeader)
+        public void SendMessage(CheckoutHeader checkoutHeader)
         {
             List<string> productStrings = new List<string>();
 
-            foreach (var product in checkoutHeader.CartDetails)
+            foreach (var product in checkoutHeader.CartDetailsList)
             {
                 productStrings.Add($"{product.Count} x {product.Product.Name} \n");
             }
