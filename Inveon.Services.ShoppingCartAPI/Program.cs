@@ -1,4 +1,5 @@
 using AutoMapper;
+using Inveon.Models;
 using Inveon.Services.ShoppingCartAPI;
 using Inveon.Services.ShoppingCartAPI.DbContexts;
 using Inveon.Services.ShoppingCartAPI.RabbitMQSender;

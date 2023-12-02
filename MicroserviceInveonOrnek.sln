@@ -33,6 +33,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Inveon.Models", "Models\Inv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inveon.Services.Reviews", "Inveon.Services.Reviews\Inveon.Services.Reviews.csproj", "{B30EDFDD-9F99-40E0-824C-6C10BDB28F32}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inveon.Services.Favorites", "Inveon.Services.Favorites\Inveon.Services.Favorites.csproj", "{A9442AE0-5E9C-42E4-B477-83BA0F570F22}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,10 @@ Global
 		{B30EDFDD-9F99-40E0-824C-6C10BDB28F32}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B30EDFDD-9F99-40E0-824C-6C10BDB28F32}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B30EDFDD-9F99-40E0-824C-6C10BDB28F32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9442AE0-5E9C-42E4-B477-83BA0F570F22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9442AE0-5E9C-42E4-B477-83BA0F570F22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9442AE0-5E9C-42E4-B477-83BA0F570F22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9442AE0-5E9C-42E4-B477-83BA0F570F22}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -99,6 +105,7 @@ Global
 		{C7B60FE0-3DD2-47A5-A610-08AB7A1E97E2} = {B87F62AF-5B78-4563-B53F-D1C2FC7A1AE2}
 		{779DC9BC-999B-49B2-8DBD-8EE0A0CA8CEE} = {D574D1B0-2D01-4D4B-BA84-86582BDCB5D6}
 		{B30EDFDD-9F99-40E0-824C-6C10BDB28F32} = {B87F62AF-5B78-4563-B53F-D1C2FC7A1AE2}
+		{A9442AE0-5E9C-42E4-B477-83BA0F570F22} = {B87F62AF-5B78-4563-B53F-D1C2FC7A1AE2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {828E0C15-C3B6-46FA-87F4-61B8E7714250}

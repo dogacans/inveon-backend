@@ -1,10 +1,12 @@
-﻿using AutoMapper;
+﻿using System.IdentityModel.Tokens.Jwt;
+using AutoMapper;
 using Inveon.Models;
 using Inveon.Models.DTOs;
 using Inveon.Services.ShoppingCartAPI.DbContexts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace Inveon.Services.ShoppingCartAPI.Repository
 {
@@ -12,6 +14,7 @@ namespace Inveon.Services.ShoppingCartAPI.Repository
     {
         private readonly ApplicationDbContext _db;
         private IMapper _mapper;
+        private HttpClient _httpClient;
 
         public CartRepository(ApplicationDbContext db, IMapper mapper)
         {
@@ -99,6 +102,14 @@ namespace Inveon.Services.ShoppingCartAPI.Repository
                         await _db.CartDetails.AddAsync(newCartDetails);
                     }
                     await _db.SaveChangesAsync();
+                    
+                    // add the product to the database
+                    // var hrm = await _httpClient.GetAsync($"api/products/{productId}");
+                    // string jsonContent = await hrm.Content.ReadAsStringAsync();
+                    //
+                    // Product product = JsonConvert.DeserializeObject<Product>(jsonContent);
+                    //
+                    // await _db.Products.AddAsync(product);
                     
                     return true;
         }
