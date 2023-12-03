@@ -26,5 +26,7 @@ namespace Inveon.Models
         public string Season { get; set; }
         public string ImageUrls { get; set; }
         public string DateAdded { get; set; }
+        public string CategoryName => Category?.CategoryName; // Assuming 'Name' is the property in the Category class
+        public string BrandName => Brand?.Name; // Assuming 'Name' is the property in the Brand class
     }
 }

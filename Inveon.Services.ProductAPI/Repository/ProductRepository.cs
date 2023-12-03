@@ -71,7 +71,10 @@ namespace Inveon.Services.ProductAPI.Repository
 
         public async Task<IEnumerable<ProductDto>> GetProducts()
         {
-            List<Product> productList = await _db.Products.ToListAsync();
+            List<Product> productList = await _db.Products.Include(p => p.Category)
+                .Include(p => p.Brand).ToListAsync();
+            
+            
             return _mapper.Map<List<ProductDto>>(productList);
         }
     }
