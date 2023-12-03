@@ -42,7 +42,7 @@ namespace Inveon.Services.Inform
                     ulong deliveryTag = ea.DeliveryTag;
                     var body = ea.Body.ToArray();
                     string message = Encoding.UTF8.GetString(body);
-                    CheckoutHeaderDto messageObject = JsonConvert.DeserializeObject<CheckoutHeaderDto>(message);
+                    CheckoutHeaderWithProducts messageObject = JsonConvert.DeserializeObject<CheckoutHeaderWithProducts>(message);
 
                     try
                     {
@@ -70,7 +70,7 @@ namespace Inveon.Services.Inform
             }  
         }
 
-        public void HandleMessage(CheckoutHeaderDto checkoutHeader) 
+        public void HandleMessage(CheckoutHeaderWithProducts checkoutHeader) 
         {
             _emailSender.SendMessage(checkoutHeader);
         }

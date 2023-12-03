@@ -54,6 +54,7 @@ namespace Inveon.Service.ShoppingCartAPI.Controllers
                     return BadRequest();
                 }
 
+                
                 CheckoutHeader checkoutHeader = new CheckoutHeader();
                 checkoutHeader.UserId = userId;
                 checkoutHeader.OrderTotal = checkoutHeaderDto.OrderTotal;
@@ -68,7 +69,33 @@ namespace Inveon.Service.ShoppingCartAPI.Controllers
                 checkoutHeader.CartDetailsList = cart.CartDetails;
                 checkoutHeader.cartHeader = cart.CartHeader;
                 
-                Payment payment = await OdemeIslemi(checkoutHeader);
+                List<Product> productsFromDb = new List<Product>();
+                foreach (CartDetails cartDetails in checkoutHeader.CartDetailsList)
+                {
+                    var hrm = await 
+                        _httpClient.GetAsync($"http://localhost:5003/api/products/{cartDetails.ProductId.ToString()}");
+                    string jsonContent = await hrm.Content.ReadAsStringAsync();
+                    RootObject response = JsonConvert.DeserializeObject<RootObject>(jsonContent);
+                    Product product = response.Result.productData;
+                    productsFromDb.Add(product);
+                }
+
+                CheckoutHeaderWithProducts chwp = new CheckoutHeaderWithProducts();
+                chwp.UserId = userId;
+                chwp.OrderTotal = checkoutHeaderDto.OrderTotal;
+                chwp.FirstName = checkoutHeaderDto.FirstName;
+                chwp.LastName = checkoutHeaderDto.LastName;
+                chwp.Phone = checkoutHeaderDto.Phone;
+                chwp.Email = checkoutHeaderDto.Email;
+                chwp.CardNumber = checkoutHeaderDto.CardNumber;
+                chwp.CVV = checkoutHeaderDto.CVV;
+                chwp.ExpiryMonth = checkoutHeaderDto.ExpiryMonth;
+                chwp.ExpiryYear = checkoutHeaderDto.ExpiryYear;
+                chwp.CartDetailsList = cart.CartDetails;
+                chwp.cartHeader = cart.CartHeader;
+                chwp.Products = productsFromDb;
+                
+                Payment payment = await OdemeIslemi(checkoutHeader, productsFromDb);
                 if (payment.Status != "success")
                 {
                     _response.IsSuccess = false;
@@ -77,7 +104,7 @@ namespace Inveon.Service.ShoppingCartAPI.Controllers
                 }
 
                 _rabbitMQCartMessageSender.SendMessage(checkoutHeaderDto, "checkoutqueue");
-                _rabbitMQCartMessageSender.SendMessage(checkoutHeaderDto, "informQueue");
+                _rabbitMQCartMessageSender.SendMessage(chwp, "informQueue");
                 await _cartRepository.ClearCart(checkoutHeader.UserId);
             }
             catch (Exception ex)
@@ -95,7 +122,7 @@ namespace Inveon.Service.ShoppingCartAPI.Controllers
             public string DisplayMessage { get; set; }
             public object ErrorMessages { get; set; } // You might want to replace 'object' with the actual type
         }
-        public async Task<Payment> OdemeIslemi(CheckoutHeader checkoutHeader)
+        public async Task<Payment> OdemeIslemi(CheckoutHeader checkoutHeader, List<Product> products)
         {
 
             Cart cart = new Cart();
@@ -109,17 +136,7 @@ namespace Inveon.Service.ShoppingCartAPI.Controllers
             options.SecretKey = "sandbox-r8qKpYEbYpkRnqQ0I49dxXQxJye4scvK";
             options.BaseUrl = "https://sandbox-api.iyzipay.com";
 
-            List<Product> productsFromDb = new List<Product>();
-            foreach (CartDetails cartDetails in checkoutHeader.CartDetailsList)
-            {
-            var hrm = await 
-                _httpClient.GetAsync($"http://localhost:5003/api/products/{cartDetails.ProductId.ToString()}");
-                string jsonContent = await hrm.Content.ReadAsStringAsync();
-                RootObject response = JsonConvert.DeserializeObject<RootObject>(jsonContent);
-                Product product = response.Result.productData;
-                productsFromDb.Add(product);
-            }
-            
+            List<Product> productsFromDb = products;
             
             // Sepet tutarını kendi databaseimizden gelen bilgiden hesaplıyoruz.
             double totalPrice = 0.0;

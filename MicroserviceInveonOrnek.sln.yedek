@@ -5,15 +5,21 @@ VisualStudioVersion = 17.5.33502.453
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{B87F62AF-5B78-4563-B53F-D1C2FC7A1AE2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gateway", "Gateway", "{90B997F3-4FAA-42EB-961A-AE7AE34905D0}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integration", "Integration", "{D574D1B0-2D01-4D4B-BA84-86582BDCB5D6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Inveon.Services.ProductAPI", "Inveon.Services.ProductAPI\Inveon.Services.ProductAPI.csproj", "{49A07E15-12BA-4561-AE2C-EA1458945800}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Inveon.GatewaySolution", "Inveon.GatewaySolution\Inveon.GatewaySolution.csproj", "{887DFB65-30DF-4DF8-81FA-3B43764C40C0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Inveon.Services.Identity", "Inveon.Services.Identity\Inveon.Services.Identity.csproj", "{BE0EA2EA-0A3A-4EA3-8C69-DA07D293D346}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Inveon.Services.ShoppingCartAPI", "Inveon.Services.ShoppingCartAPI\Inveon.Services.ShoppingCartAPI.csproj", "{8B69027F-71DC-41BE-8253-50A9D17C9E93}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Inveon.MessageBus", "Inveon.MessageBus\Inveon.MessageBus.csproj", "{49070D58-B2D4-46A8-BB76-9D953E78484C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Inveon.Services.CouponAPI", "Inveon.Services.CouponAPI\Inveon.Services.CouponAPI.csproj", "{061D37F6-8F48-458C-8D24-D6A76E4C4B23}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Inveon.Services.Inform", "Inveon.Services.Inform\Inveon.Services.Inform.csproj", "{88151C27-3217-4062-BB1F-6A62904D3B12}"
 EndProject

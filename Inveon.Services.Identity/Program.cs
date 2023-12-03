@@ -74,7 +74,7 @@ app.UseEndpoints(endpoints =>
 });
 
 app.UseCors(
-    options => options.WithOrigins("http://localhost:3000").AllowAnyMethod()
+    options => options.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowCredentials().AllowAnyHeader()
 );
 
 app.Run();

@@ -22,6 +22,9 @@ public class ReviewController : ControllerBase
     {
         ClaimsPrincipal currentUser = this.User;
         string userId = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+        string firstName= currentUser.FindFirst(ClaimTypes.GivenName).Value;
+        string lastName= currentUser.FindFirst(ClaimTypes.Surname).Value;
+        string userName = $"{firstName} {lastName}";
         
         Review review = new Review();
         review.Comment = reviewDto.Comment;
@@ -29,6 +32,7 @@ public class ReviewController : ControllerBase
         review.ProductId = reviewDto.ProductId;
         review.UserId = userId;
         review.Timestamp = DateTime.UtcNow;
+        review.UserName = userName;
         
         try
         {

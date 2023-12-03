@@ -226,91 +226,65 @@ namespace IdentityServerHost.Quickstart.UI
 
             return View(vm);
         }
+        [HttpOptions]
+        public async Task<IActionResult> Register()
+        {
+            var re = Request;
+            var resp = Response;
+            var headers = re.Headers;
+            resp.Headers.AccessControlAllowOrigin = "http://localhost:3000";
+            resp.Headers.AccessControlAllowHeaders = "content-type";
+            
+            return Ok();
+        }
 
-       
+        
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
+        public async Task<IActionResult> Register([FromBody] RegisterObject regObj)
         {
-            ViewData["ReturnUrl"] = returnUrl;
-            if (ModelState.IsValid)
-            {
-
+            var resp = Response;
+            resp.Headers.AccessControlAllowOrigin = "http://localhost:3000";
+            resp.Headers.AccessControlAllowHeaders = "content-type";
+            string returnUrl = regObj.ReturnUrl;
                 var user = new ApplicationUser
                 {
-                    UserName = model.Username,
-                    Email = model.Email,
+                    UserName = regObj.Username,
+                    Email = regObj.Email,
                     EmailConfirmed = true,
-                    FirstName = model.FirstName,
-                    LastName = model.LastName
+                    FirstName = regObj.FirstName,
+                    LastName = regObj.LastName
                 };
 
-                var result = await _userManager.CreateAsync(user, model.Password);
+                var result = await _userManager.CreateAsync(user, regObj.Password);
                 if (result.Succeeded)
                 {
-                    if (!_roleManager.RoleExistsAsync(model.RoleName).GetAwaiter().GetResult())
-                    {
-                        var userRole = new IdentityRole
-                        {
-                            Name = model.RoleName,
-                            NormalizedName = model.RoleName,
 
-                        };
-                        await _roleManager.CreateAsync(userRole);
-                    }
-
-                    await _userManager.AddToRoleAsync(user, model.RoleName);
+                    await _userManager.AddToRoleAsync(user, "Customer");
 
                     await _userManager.AddClaimsAsync(user, new Claim[]{
-                            new Claim(JwtClaimTypes.Name, model.Username),
-                            new Claim(JwtClaimTypes.Email, model.Email),
-                            new Claim(JwtClaimTypes.FamilyName, model.FirstName),
-                            new Claim(JwtClaimTypes.GivenName, model.LastName),
-                            new Claim(JwtClaimTypes.WebSite, "http://"+model.Username+".com"),
+                            new Claim(JwtClaimTypes.Name, regObj.Username),
+                            new Claim(JwtClaimTypes.Email, regObj.Email),
+                            new Claim(JwtClaimTypes.FamilyName, regObj.FirstName),
+                            new Claim(JwtClaimTypes.GivenName, regObj.LastName),
+                            new Claim(JwtClaimTypes.WebSite, "http://"+regObj.Username+".com"),
                             new Claim(JwtClaimTypes.Role,"User") });
 
-                    var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
-                    var loginresult = await _signInManager.PasswordSignInAsync(model.Username, model.Password, false, lockoutOnFailure: true);
+                    var context = await _interaction.GetAuthorizationContextAsync(regObj.ReturnUrl);
+                    var loginresult = await _signInManager.PasswordSignInAsync(regObj.Username, regObj.Password, false, lockoutOnFailure: true);
                     if (loginresult.Succeeded)
                     {
-                        var checkuser = await _userManager.FindByNameAsync(model.Username);
+                        var checkuser = await _userManager.FindByNameAsync(regObj.Username);
                         await _events.RaiseAsync(new UserLoginSuccessEvent(checkuser.UserName, checkuser.Id, checkuser.UserName, clientId: context?.Client.ClientId));
-
-                        if (context != null)
-                        {
-                            if (context.IsNativeClient())
-                            {
-                                // The client is native, so this change in how to
-                                // return the response is for better UX for the end user.
-                                return this.LoadingPage("Redirect", model.ReturnUrl);
-                            }
-
-                            // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
-                            return Redirect(model.ReturnUrl);
-                        }
-
+                        
                         // request for a local page
-                        if (Url.IsLocalUrl(model.ReturnUrl))
-                        {
-                            return Redirect(model.ReturnUrl);
-                        }
-                        else if (string.IsNullOrEmpty(model.ReturnUrl))
-                        {
-                            return Redirect("~/");
-                        }
-                        else
-                        {
-                            // user might have clicked on a malicious link - should be logged
-                            throw new Exception("invalid return URL");
-                        }
+                        
+                        return Ok();
                     }
-
                 }
-            }
+            
 
-            // If we got this far, something failed, redisplay form
-            return View(model);
+            return BadRequest(result.Errors);
         }
         private async Task<RegisterViewModel> BuildRegisterViewModelAsync(string returnUrl)
         {
